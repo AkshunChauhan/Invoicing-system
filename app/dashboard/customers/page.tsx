@@ -28,7 +28,7 @@ export default async function Page({
   const totalPages = await fetchCustomersPages(query, userEmail);
 
   const user = await getUser(userEmail);
-  let theme: themeType = systemDefault;
+  let theme: themeType;
 
   switch(user.theme) {
     case 'system':

@@ -7,7 +7,7 @@ export default async function Loading() {
   const session = await auth();
   const userEmail = session?.user?.email!;
   const user = await getUser(userEmail);
-  let theme: themeType = systemDefault;
+  let theme: themeType;
 
   switch(user.theme) {
     case 'system':

@@ -12,41 +12,27 @@ import { darkTheme, lightTheme, systemDefault, themeType } from '@/app/lib/theme
 export const metadata: Metadata = {
   title: 'Dashboard',
 };
-
 export default async function Page() {
   const session = await auth();
-  const userEmail = session?.user?.email!;
-  const user = await getUser(userEmail);
-  
-  // Default to system theme if no valid theme is found
-  let theme: themeType = systemDefault;
+const userEmail = session?.user?.email!;
+const user = await getUser(userEmail);
+let theme: themeType;
 
-  // Debug log to check user.theme value
-  console.log('User theme:', user.theme);
-
-  // Set the theme based on user preference
-  switch (user.theme) {
-    case 'system':
-      theme = systemDefault;
-      break;
-    case 'dark':
-      theme = darkTheme;
-      break;
-    case 'light':
-      theme = lightTheme;
-      break;
-    default:
-      theme = systemDefault;
-      console.warn('Invalid theme, defaulting to system theme');
-      break;
-  }
-
-  // Check if theme.title exists; if not, use a fallback value
-  const themeTitle = theme?.title || 'default-title'; 
+switch(user.theme) {
+  case 'system':
+    theme = systemDefault;
+    break;
+  case 'dark':
+    theme = darkTheme;
+    break;
+  case 'light':
+    theme = lightTheme;
+    break;
+}
 
   return (
     <main>
-      <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl ${themeTitle}`}>
+      <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl ${theme.title}`}>
         Dashboard
       </h1>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
