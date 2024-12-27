@@ -13,7 +13,7 @@ export default async function Page() {
   const session = await auth();
   const userEmail = session?.user?.email!;
   const user = await getUser(userEmail);
-  let theme: themeType;
+  let theme: themeType = systemDefault;
 
   switch(user.theme) {
     case 'system':

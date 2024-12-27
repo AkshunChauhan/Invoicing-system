@@ -18,7 +18,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const customer = await fetchCustomerById(id, userEmail);
 
   const user = await getUser(userEmail);
-  let theme: themeType;
+  let theme: themeType = systemDefault;
 
   switch(user.theme) {
     case 'system':

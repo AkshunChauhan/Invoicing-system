@@ -13,7 +13,8 @@ export default async function Page() {
   const session = await auth();
   const userEmail = session?.user?.email!;
   const user = await getUser(userEmail);
-    let theme: themeType;
+
+  let theme: themeType = systemDefault;  // Default theme fallback
 
   switch(user.theme) {
     case 'system':
@@ -25,14 +26,18 @@ export default async function Page() {
     case 'light':
       theme = lightTheme;
       break;
+    default:
+      // Fallback if no theme is provided
+      theme = systemDefault;
+      break;
   }
 
   return (
     <main className="w-full">
       <div className="flex w-full items-center justify-between mb-6">
-        <h1 className={`${lusitana.className} text-2xl ${theme.title}`}>Settings</h1>
+        <h1 className={`${lusitana.className} text-2xl ${theme.title || ''}`}>Settings</h1>
       </div>
       <Form user={user} theme={theme} />
     </main>
-  )
+  );
 }

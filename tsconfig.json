@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -27,8 +27,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/lib/placeholder-data.js",
+    "app/lib/placeholder-data.ts",
     "scripts/seed.js"
-  ],
+, "app/seed/route.cjs"  ],
   "exclude": ["node_modules"]
 }
