@@ -8,14 +8,26 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Create Customer',
 };
- 
+
 export default async function Page() {
   const session = await auth();
-  const userEmail = session?.user?.email!;
+  const userEmail = session?.user?.email || '';
+
+  // Ensure the user is authenticated
+  if (!userEmail) {
+    return <p>Unauthorized. Please log in.</p>; // Or redirect to login page
+  }
+
   const user = await getUser(userEmail);
+
+  if (!user) {
+    return <p>User not found</p>; // Handle case where user doesn't exist
+  }
+
   let theme: themeType = systemDefault;
 
-  switch(user.theme) {
+  // Determine user theme
+  switch (user.theme) {
     case 'system':
       theme = systemDefault;
       break;
@@ -25,7 +37,15 @@ export default async function Page() {
     case 'light':
       theme = lightTheme;
       break;
+    default:
+      theme = systemDefault;
+      break;
   }
+
+  // Extract additional user details
+  const phone = user.phone || ''; // Default to an empty string if not available
+  const billingAddress = user.billing_address || ''; 
+  const shippingAddress = user.shipping_address || '';
 
   return (
     <main>
@@ -40,7 +60,13 @@ export default async function Page() {
         ]}
         theme={theme}
       />
-      <Form userEmail={userEmail} theme={theme}/>
+      <Form 
+        userEmail={userEmail} 
+        theme={theme}
+        phone={phone}
+        billingAddress={billingAddress}
+        shippingAddress={shippingAddress}
+      />
     </main>
   );
 }

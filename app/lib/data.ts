@@ -332,13 +332,15 @@ export async function fetchCustomerById(id: string, userEmail: string) {
   try {
     const customer = await sql<CustomerForm>`
       SELECT
-        id, name, email
+        id, name, email, phone, billing_address, shipping_address
       FROM customers
       WHERE
         customers.user_email = ${userEmail} 
           AND
         id = ${id};
     `;
+
+    //console.log('Fetched customer data:', customer.rows[0]);
 
     return customer.rows[0];
   } catch (error) {

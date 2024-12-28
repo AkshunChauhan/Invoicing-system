@@ -3,6 +3,9 @@
 // For simplicity of teaching, we're manually defining these types.
 // However, these types are generated automatically if you're using an ORM such as Prisma.
 export type User = {
+  phone: string;
+  billing_address: string;
+  shipping_address: string;
   id: string;
   name: string;
   email: string;
@@ -15,6 +18,9 @@ export type Customer = {
   id: string;
   name: string;
   email: string;
+  phone: string;
+  billing_address: string;
+  shipping_address: string;
 };
 
 export type Invoice = {
@@ -88,4 +94,7 @@ export type CustomerForm = {
   id: string;
   name: string;
   email: string;
+  phone: string;
+  billing_address: string;
+  shipping_address: string;
 };

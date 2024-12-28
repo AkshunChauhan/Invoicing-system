@@ -4,12 +4,17 @@ import { fetchCustomerById, getUser } from '@/app/lib/data';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { auth } from '@/auth';
-import { darkTheme, lightTheme, systemDefault, themeType } from '@/app/lib/theme';
+import {
+  darkTheme,
+  lightTheme,
+  systemDefault,
+  themeType,
+} from '@/app/lib/theme';
 
 export const metadata: Metadata = {
   title: 'Edit Customer',
 };
- 
+
 export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id;
   const session = await auth();
@@ -20,7 +25,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const user = await getUser(userEmail);
   let theme: themeType = systemDefault;
 
-  switch(user.theme) {
+  switch (user.theme) {
     case 'system':
       theme = systemDefault;
       break;
@@ -35,7 +40,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   if (!customer) {
     return notFound();
   }
-  
+
   return (
     <main>
       <Breadcrumbs
@@ -49,7 +54,14 @@ export default async function Page({ params }: { params: { id: string } }) {
         ]}
         theme={theme}
       />
-      <Form customer={customer} userEmail={userEmail} theme={theme} />
+      <Form
+        customer={customer}
+        userEmail={userEmail}
+        theme={theme}
+        phone={customer.phone} // Access phone from customer object
+        billingAddress={customer.billing_address} // Access billing_address
+        shippingAddress={customer.shipping_address} // Access shipping_address
+      />
     </main>
-  )
+  );
 }

@@ -56,8 +56,12 @@ const InvoicesSchema = z.object({
 const CustomerSchema = z.object({
   name: nameSchema,
   email: emailSchema,
-  userEmail: emailSchema
+  userEmail: emailSchema,
+  phone: z.string().optional(),
+  billingAddress: z.string().optional(),
+  shippingAddress: z.string().optional()
 })
+
 
 // Use Zod to update the expected types
 const CreateInvoice = InvoicesSchema.omit({ id: true, date: true });
@@ -181,69 +185,65 @@ export async function createCustomer(prevState: CustomerState, formData: FormDat
   const validatedFields = CustomerSchema.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
-    userEmail: formData.get('userEmail')
+    userEmail: formData.get('userEmail'),
+    phone: formData.get('phone'),
+    billingAddress: formData.get('billing_address'),
+    shippingAddress: formData.get('shipping_address'),
   });
- 
-  // If form validation fails, return errors early. Otherwise, continue.
+
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing Fields. Failed to Create Customer.',
     };
   }
- 
+
   // Prepare data for insertion into the database
-  const { name, email, userEmail} = validatedFields.data;
- 
-  // Insert data into the database
+  const { name, email, userEmail, phone, billingAddress, shippingAddress } = validatedFields.data;
+
   try {
     await sql`
-      INSERT INTO customers (name, email, user_email)
-      VALUES (${name}, ${email}, ${userEmail})
+      INSERT INTO customers (name, email, user_email, phone, billing_address, shipping_address)
+      VALUES (${name}, ${email}, ${userEmail}, ${phone}, ${billingAddress}, ${shippingAddress})
     `;
   } catch (error) {
-    // If a database error occurs, return a more specific error.
     return {
       message: 'Database Error: Failed to Create Customer.',
     };
   }
- 
+
   redirect('/dashboard/customers');
 }
 
-export async function updateCustomer(
-  id: string,
-  prevState: CustomerState,
-  formData: FormData
-) {
+export async function updateCustomer(id: string, prevState: CustomerState, formData: FormData) {
   const validatedFields = CustomerSchema.safeParse({
     name: formData.get('name'),
     email: formData.get('email'),
-    userEmail: formData.get('userEmail')
+    userEmail: formData.get('userEmail'),
+    phone: formData.get('phone'),
+    billingAddress: formData.get('billing_address'),
+    shippingAddress: formData.get('shipping_address'),
   });
- 
+
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       message: 'Missing Fields. Failed to Update Customer.',
     };
   }
- 
-  const { name, email, userEmail } = validatedFields.data;
- 
+
+  const { name, email, userEmail, phone, billingAddress, shippingAddress } = validatedFields.data;
+
   try {
     await sql`
       UPDATE customers
-      SET name = ${name}, email = ${email}
-      WHERE
-        customers.user_email = ${userEmail}
-      AND
-        id = ${id}
+      SET name = ${name}, email = ${email}, phone = ${phone}, billing_address = ${billingAddress}, shipping_address = ${shippingAddress}
+      WHERE user_email = ${userEmail} AND id = ${id}
     `;
   } catch (error) {
     return { message: 'Database Error: Failed to Update Customer.' };
   }
- 
+
   redirect('/dashboard/customers');
 }
 
